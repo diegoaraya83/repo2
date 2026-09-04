@@ -1,0 +1,59 @@
+PS C:\Repo2> 
+PS C:\Repo2> git init
+Initialized empty Git repository in C:/Repo2/.git/
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git config --global user.name diego
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git config --global user.email diegoaraya83@gmail.com
+user.name=diego
+user.email=diegoaraya83@gmail.com
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+        new file:   test3.txt
+
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git commit -m "lo hice de nuevo Cero"
+[master (root-commit) 31ca01f] lo hice de nuevo Cero
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 test1.txt
+PS C:\Repo2> 
+PS C:\Repo2> git branch -m main
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git branch -M main
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git push -u origin main
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 225 bytes | 225.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/diegoaraya83/repo2.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
