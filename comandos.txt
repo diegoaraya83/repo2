@@ -57,3 +57,25 @@ PS C:\Repo2>
 PS C:\Repo2> 
 PS C:\Repo2> 
 PS C:\Repo2> 
+
+
+
+
+
+
+
+como subir los doc
+
+
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git add .
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> git commit -m "agrego comandos"
+[main e5ad081] agrego comandos
+ 1 file changed, 59 insertions(+)
+ create mode 100644 comandos.txt
+PS C:\Repo2> 
+PS C:\Repo2> 
+PS C:\Repo2> 
