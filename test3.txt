@@ -1,0 +1,73 @@
+Los requerimientos descritos corresponden al perfil de un Repositorio Acelerado de Backup e Inmutabilidad de Nivel Empresarial (Enterprise Hardened Backup Target / Object Storage Repository).
+
+En la industria actual, estos pliegos técnicos se cubren con tres arquitecturas principales, siendo HPE y Dell Technologies las opciones líderes que cumplen punto por punto con los requisitos solicitados:
+
+Opción Recomendada 1: HPE Alletra Storage Server 4110 / 4120
+(Servidor de almacenamiento de alta densidad diseñado específicamente para repositorios inmutables con Veeam y PBS)
+
+1. Memoria de Cálculo de Capacidad (Sugerida para 200 TB Útiles Reales)
+Para garantizar 200 TB útiles, sin depender de ratio de deduplicación/compresión en la métrica base:
+
+Configuración Bruta: ~288 TB a 384 TB brutos (usando discos NL-SAS / SAS de alta densidad o SSDs NVMe de capacidad media/alta).
+
+Redundancia / RAID: RAID 6 (8+2 o 10+2) o asignación por software erasure coding (p. ej. en arquitecturas Linux Hardened / Ceph / ZFS) → Pérdida por paridad: ~20% a 25%.
+
+Reserva de Sistema y Metadatos: Deducción de conversión decimal/binaria (TiB vs TB) + reserva técnica de rendimiento del file system (15% a 20% para evitar degradación de IOPS por sobrellenado de bloques).
+
+Resultado Neto Final: ~200 TB a 210 TB útiles y disponibles reales.
+
+2. Cumplimiento de Requerimientos Clave
+Integración Protocolar:
+
+Veeam: Soporte nativo como Veeam Hardened Repository (XFS con Reflink) usando Linux o como Target S3 Inmutable.  
+Veeam
+
+Proxmox VE & PBS: Presentación por iSCSI / NFS para datastores de VM, y NFS / S3 para Proxmox Backup Server (PBS) con soporte de Pruning, Garbage Collection y deduplicación nativa del cliente.
+
+Compatibilidad Multi-Protocolo: Múltiples volúmenes presentados simultáneamente por iSCSI, NFS, SMB (CIFS) y S3 (MinIO / Ceph u Object Storage nativo).
+
+Conectividad y Redundancia:
+
+2x Puertos 1GbE Base-T (Administración / OOBM iLO).
+
+4x Puertos 25GbE SFP28 (LACP / Bonded activo-activo o MPIO para tráfico de backup).
+
+2x u 8x Puertos 100GbE QSFP28 en tarjetas PCIe redundantes de doble puerto.
+
+Rendimiento para Ventanas Masivas:
+
+Basado en procesadores Intel Xeon Scalable / AMD EPYC de última generación + controladoras SAS/NVMe de alto Throughput.
+
+Soporte de escritura secuencial masiva para llenar ventanas de backup exigentes y lectura paralela multihilo (Throughput estimado > 6 a 12 GB/s según la mezcla de media de discos/SSD de caché).
+
+Capacidad de Instant VM Recovery (restauración inmediata) tanto en Veeam como en Proxmox desde la cabecera.
+
+Seguridad, Resiliencia e Inmutabilidad:
+
+Fuente de alimentación redundante Hot-Swap (2x PSU Platinum/Titanium) y ventilación N+1.
+
+Inmutabilidad: Compatibilidad nativa con Object Lock (API S3) y atributos chattr +i de XFS inmutable para protección estricta a nivel de Kernel contra Ransomware.
+
+Cifrado por hardware (SED drives) o cifrado de volúmenes al vuelo (AES-256).
+
+Escalabilidad:
+
+Crecimiento modular mediante la adición de chasis de expansión de discos (JBOD / Shelves como HPE D3000/D6000 o cajas de expansión NVMe/SAS).
+
+Opción Recomendada 2: Dell PowerVault ME5084 o Dell PowerScale A3000 / F600
+(Dependiendo de si se prefiere arquitectura SAN/NAS tradicional o almacenamiento en escala/escalamiento masivo Object/NAS)
+
+Dell PowerVault ME5084: Matriz de densidad ultra alta (4U, hasta 84 discos). Ideal si se buscan conexiones iSCSI/FC/NFS directas con aceleración ADAPT RAID (reconstrucciones ultrarrápidas).  
+Dell
+
+Dell PowerScale (A3000 / F-series): Arquitectura Scale-Out NAS/Object basada en OneFS. Permite crecimiento nodo a nodo, inmutabilidad nativa mediante política SmartLock (WORM/S3 Object Lock) y conectividad redundante dual de 25GbE / 100GbE por nodo.  
+Dell Storage
+
+Opción Software-Defined (SDS) Alternativa: Supermicro / Dell / HPE + Ceph / MinIO Enterprise
+Si la solución requiere flexibilidad SDS (Storage Definido por Software):
+
+Chasis de grado servidor con redundancia total de fuentes y controladoras.
+
+Capa de software empresarial (como Red Hat Ceph Storage, SUSE Enterprise Storage o MinIO Enterprise) sobre Linux.
+
+Ofrece conectividad S3/NFS/iSCSI nativa con S3 Object Lock garantizado y escalabilidad ilimitada mediante el agregado de nodos o shelves de discos.

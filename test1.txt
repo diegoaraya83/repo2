@@ -1,0 +1,30 @@
+Pasar de 512 GB a 1 TB de RAM en este servidor no solo duplica la capacidad de memoria, sino que trae una mejora de rendimiento crítica a nivel de arquitectura de hardware: duplicar el ancho de banda de memoria de la CPU.
+
+1. Duplicación del Ancho de Banda de Memoria (El cambio más importante)
+En el BOM actual tienes 8 módulos de memoria para 2 procesadores Intel Xeon 6746E. Cada uno de estos procesadores cuenta con 8 canales de memoria DDR5.
+
+Con 512 GB (8 x 64 GB): Cada CPU tiene solo 4 de sus 8 canales ocupados. El servidor funciona con la mitad del ancho de banda de memoria posible.
+
+Con 1 TB (16 x 64 GB): Al colocar 16 DIMMs (8 por procesador), se completa 1 DIMM por canal (1 DPC) en toda la placa madre. Esto duplica de inmediato la velocidad de transferencia entre los Xeon y la RAM (pasando de ~200 GB/s a ~400 GB/s por socket).
+
+2. Impacto Directo en la Inferencia de IA y Cargas de Trabajo
+Aunque las GPUs NVIDIA RTX PRO 4500 manejan la ejecución rápida de los tensores del LLM, la RAM del sistema juega varios roles clave:
+
+Inferencia en CPU y Modelos Híbridos / MoE (Mixture of Experts):
+Si en algún momento ejecutas modelos que no quepan 100% en la VRAM de las GPUs (96 GB) y requieras hacer offloading o cuantizaciones híbridas hacia la RAM del servidor, la velocidad de respuesta depende enteramente del ancho de banda DDR5. Con 1 TB full-channel, la penalización por usar RAM disminuye a la mitad.
+
+Bases de Datos Vectoriales en Memoria (RAG):
+Para entornos de RAG (Retrieval-Augmented Generation) donde los índices vectoriales (pgvector, Qdrant, Milvus, FAISS) se cargan totalmente en RAM para responder a los 70 usuarios sin ir a disco, contar con 1 TB permite mantener índices gigantomaníacos de millones de documentos e incrustaciones (embeddings) con tiempos de búsqueda de milisegundos.
+
+Mayor Capacidad para Caché de Contexto y Pre-procesamiento:
+Al procesar PDFs pesados, OCR, preparación de prompts y mantener instancias de embeddings corriendo simultáneamente con el LLM principal, los 512 GB adicionales garantizan que la CPU nunca sufra por falta de memoria ni tenga que recurrir al disco para swap.
+
+Consolidación de Servicios (Virtualización / Contenedores):
+Permite desplegar tranquilamente en la misma máquina varias instancias del modelo en entornos aislados (desarrollo, staging, producción), además de la pila de microservicios de API y agentes sin comprometer recursos.
+
+Resumen del Beneficio
+Aspecto	Configuración Actual (512 GB)	Configuración con 1 TB (16x64GB)	Impacto
+Canales DDR5 Activos	4 de 8 por CPU (Incompleto)	8 de 8 por CPU (100% Full Channel)	2x Ancho de banda de memoria
+Búsqueda Vectorial (RAG)	Limitada a índices de tamaño medio	Índices masivos completamente en RAM	Latencias de búsqueda ultrabajas
+Concurrencia de Contexto	Excelente	Sobrada para RAG pesado + multi-modelo	Cero riesgo de saturación
+Conclusión: La mejora es altamente recomendable, no solo por los 512 GB extra para grandes volúmenes de datos en RAG, sino porque desbloqueas el 100% del rendimiento que los dos procesadores Xeon Gen6 pueden entregar.
